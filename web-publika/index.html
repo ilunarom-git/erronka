@@ -3,9 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Portal de Servicios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .service-card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .service-card h2 {
+            color: #0066cc;
+            margin: 0 0 10px 0;
+        }
+        .service-card p {
+            color: #666;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .service-card a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .service-card a:hover {
+            background-color: #0052a3;
+        }
+    </style>
 </head>
 <body>
-    web publika
+    <div class="container">
+        <h1>Portal de Servicios</h1>
+        <div class="services-grid">
+            <div class="service-card">
+                <h2>EcomMundo - Ordenagailu</h2>
+                <p>Tienda de ordenadores y componentes electrónicos de calidad a precios competitivos.</p>
+                <a href="/ecommundo/">Acceder</a>
+            </div>
+            <div class="service-card">
+                <h2>Mi Web</h2>
+                <p>Tu web personal o corporativa alojada en el portal.</p>
+                <a href="/mi-web/">Acceder</a>
+            </div>
+            <div class="service-card">
+                <h2>Intranet</h2>
+                <p>Panel interno de administración y servicios internos.</p>
+                <a href="/">Acceder</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

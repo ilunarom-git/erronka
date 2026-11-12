@@ -50,4 +50,11 @@ const APPS = [
     imagen: 'img/generica.svg',        // o descarga un icono en img/
     descripcion: 'Estado de los servicios',
   },
+
+    {
+    nombre: 'EcomMundo-Ordenagailu',
+    ruta: 'https://ecommundo.localhost/',   // URL completa del subdominio
+    imagen: 'img/generica.svg',        // o descarga un icono en img/
+    descripcion: 'Ordenagailu denda',
+  },
 ];
