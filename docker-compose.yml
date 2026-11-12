@@ -2,8 +2,13 @@
 #
 #   docker compose up -d                    ← siempre desde esta carpeta
 #     https://localhost/              → intranet
-#     https://localhost/ecommundo/    → EcomMundo-Ordenagailu
+#     https://localhost/codigo-agil/  → Código Agil
 #     https://localhost/mi-web/       → portal (web-publika/)
+#     https://localhost/code/         → Code Server
+#     https://localhost/portainer/    → Portainer
+#     https://localhost/adminer/      → Adminer
+#     https://localhost/whoami/       → Whoami
+#     https://localhost/kuma/         → Uptime Kuma
 #
 # HTTP se redirige automáticamente a HTTPS
 # Solo el proxy publica puertos ("ports"). El resto de servicios no son accesibles desde fuera:
@@ -12,7 +17,7 @@
 services:
   proxy:                        # reverse proxy HTTPS + portal
     image: nginx:alpine
-    container_name: ecommundo-proxy
+    container_name: codigo-agil-proxy
     restart: unless-stopped
     ports:
       - "80:80"
@@ -21,12 +26,16 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./certs:/etc/nginx/certs:ro
     networks:
-      - ecommundo-network
-      - nginx-reverse-proxy_default
+      - codigo-agil-network
     depends_on:
-      - ecommundo
+      - codigo-agil
       - mi-web
       - intranet
+      - code-server
+      - portainer
+      - adminer
+      - whoami
+      - kuma
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:80"]
       interval: 30s
@@ -34,15 +43,15 @@ services:
       retries: 3
       start_period: 10s
 
-  ecommundo:                    # → /ecommundo/
+  codigo-agil:                  # → /codigo-agil/
     image: nginx:alpine
-    container_name: ecommundo-app
+    container_name: codigo-agil-app
     restart: unless-stopped
     volumes:
-      - ./EcomMundo-Ordenagailu:/usr/share/nginx/html:ro
-      - ./ecommundo-nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./codigo-agil:/usr/share/nginx/html:ro
+      - ./codigo-agil-nginx.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
-      - ecommundo-network
+      - codigo-agil-network
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost"]
       interval: 30s
@@ -52,12 +61,12 @@ services:
 
   mi-web:                       # → /mi-web/
     image: nginx:alpine
-    container_name: ecommundo-mi-web
+    container_name: codigo-agil-mi-web
     restart: unless-stopped
     volumes:
       - ./web-publika:/usr/share/nginx/html:ro
     networks:
-      - ecommundo-network
+      - codigo-agil-network
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost"]
       interval: 30s
@@ -67,12 +76,12 @@ services:
 
   intranet:                     # → /
     image: nginx:alpine
-    container_name: ecommundo-intranet
+    container_name: codigo-agil-intranet
     restart: unless-stopped
     volumes:
       - ./intranet:/usr/share/nginx/html:ro
     networks:
-      - ecommundo-network
+      - codigo-agil-network
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost"]
       interval: 30s
@@ -80,8 +89,81 @@ services:
       retries: 3
       start_period: 10s
 
+  code-server:                  # → /code/
+    image: codercom/code-server:latest
+    container_name: codigo-agil-code
+    restart: unless-stopped
+    environment:
+      - PASSWORD=1234
+      - SUDO_PASSWORD=1234
+    volumes:
+      - ./code-data:/home/coder/.local/share/code-server
+    networks:
+      - codigo-agil-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  portainer:                    # → /portainer/
+    image: portainer/portainer-ce:latest
+    container_name: codigo-agil-portainer
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer-data:/data
+    networks:
+      - codigo-agil-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  adminer:                      # → /adminer/
+    image: adminer:latest
+    container_name: codigo-agil-adminer
+    restart: unless-stopped
+    networks:
+      - codigo-agil-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  whoami:                        # → /whoami/
+    image: traefik/whoami:latest
+    container_name: codigo-agil-whoami
+    restart: unless-stopped
+    networks:
+      - codigo-agil-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  kuma:                          # → /kuma/
+    image: louislam/uptime-kuma:latest
+    container_name: codigo-agil-kuma
+    restart: unless-stopped
+    volumes:
+      - ./kuma-data:/app/data
+    networks:
+      - codigo-agil-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
 networks:
-  ecommundo-network:
+  codigo-agil-network:
     driver: bridge
-  nginx-reverse-proxy_default:
-    external: true

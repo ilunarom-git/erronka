@@ -32,6 +32,7 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
         }
         .service-card:hover {
             transform: translateY(-5px);
@@ -65,17 +66,17 @@
     <div class="container">
         <h1>Portal de Servicios</h1>
         <div class="services-grid">
-            <div class="service-card">
-                <h2>EcomMundo - Ordenagailu</h2>
-                <p>Tienda de ordenadores y componentes electrónicos de calidad a precios competitivos.</p>
-                <a href="/ecommundo/">Acceder</a>
+            <div class="service-card" onclick="window.location.href='/codigo-agil/'">
+                <h2>CodigoAgil</h2>
+                <p>Plataforma de desarrollo ágil y gestión de proyectos.</p>
+                <a href="/codigo-agil/">Acceder</a>
             </div>
-            <div class="service-card">
+            <div class="service-card" onclick="window.location.href='/mi-web/'">
                 <h2>Mi Web</h2>
                 <p>Tu web personal o corporativa alojada en el portal.</p>
                 <a href="/mi-web/">Acceder</a>
             </div>
-            <div class="service-card">
+            <div class="service-card" onclick="window.location.href='/'">
                 <h2>Intranet</h2>
                 <p>Panel interno de administración y servicios internos.</p>
                 <a href="/">Acceder</a>

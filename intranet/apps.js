@@ -4,15 +4,21 @@
 //   - servicio publicado por ruta:       ruta: '/code/'
 //   - servicio publicado por subdominio: ruta: 'http://kuma.localhost/'  (la URL completa)
 const PORTAL = {
-  titulo: 'Mi servidor de ecom mundo',
+  titulo: 'CodigoAgil',
   subtitulo: 'Reverse proxy con nginx y Docker',
-  pie: 'Práctica de reverse proxy · Ibai',
+  pie: 'Práctica de reverse proxy · Ioritz',
 };
 
 const APPS = [
   {
+    nombre: 'CodigoAgil',
+    ruta: 'https://localhost/codigo-agil/',
+    imagen: 'img/code.svg',
+    descripcion: 'Plataforma de desarrollo ágil',
+  },
+  {
     nombre: 'Code Server',
-    ruta: '/code/',                    // la misma ruta que su "location" en nginx.conf
+    ruta: '/code/',
     imagen: 'img/code.svg',
     descripcion: 'VS Code en el navegador',
   },
@@ -22,39 +28,22 @@ const APPS = [
     imagen: 'img/portainer.svg',
     descripcion: 'Gestión de contenedores Docker',
   },
-  // ↓ Añade aquí las cajas nuevas, antes del ]; que cierra la lista
-    {
-    nombre: 'Whoami',
-    ruta: '/whoami/',                  // la misma ruta que su location
-    imagen: 'img/generica.svg',        // o descarga un icono en img/
-    descripcion: 'Muestra la petición que le llega',
-  },
-
-    {
-    nombre: 'Miweb',
-    ruta: '/mi-web/',                  // la misma ruta que su location
-    imagen: 'img/nginx:alpine',        // o descarga un icono en img/
-    descripcion: 'Muestra tu web',
-  },
-
-    {
+  {
     nombre: 'Adminer',
-    ruta: '/adminer/',                 // la misma ruta que su location
-    imagen: 'img/generica.svg',        // o descarga un icono en img/
+    ruta: '/adminer/',
+    imagen: 'img/generica.svg',
     descripcion: 'Gestor de bases de datos',
   },
-
-    {
-    nombre: 'Uptime Kuma',
-    ruta: 'http://kuma.localhost/',    // URL completa para subdominio
-    imagen: 'img/generica.svg',        // o descarga un icono en img/
-    descripcion: 'Estado de los servicios',
+  {
+    nombre: 'Whoami',
+    ruta: '/whoami/',
+    imagen: 'img/generica.svg',
+    descripcion: 'Muestra la petición que le llega',
   },
-
-    {
-    nombre: 'EcomMundo-Ordenagailu',
-    ruta: 'https://ecommundo.localhost/',   // URL completa del subdominio
-    imagen: 'img/generica.svg',        // o descarga un icono en img/
-    descripcion: 'Ordenagailu denda',
+  {
+    nombre: 'Uptime Kuma',
+    ruta: '/kuma/',
+    imagen: 'img/generica.svg',
+    descripcion: 'Estado de los servicios',
   },
 ];
