@@ -19,6 +19,8 @@ docker-compose.override.yml
 .DS_Store
 Thumbs.db
 *.log
+!user.log
+!email.log
 
 # Embedded git repositories (if not submodules)
 docker/.git
