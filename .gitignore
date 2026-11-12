@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Embedded git repositories (if not submodules)
+docker/.git
+erronka/.git
+
+# Volumes & data
+volumes/
+data/
+*.db
+*.sqlite
+
+# Environment
+.env
+.env.local

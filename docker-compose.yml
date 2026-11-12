@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  # Dashboard principal
+  dashboard:
+    build: .
+    ports:
+      - "8080:3000"
+    networks:
+      - servicios
+    environment:
+      - NODE_ENV=production
+
+  # Code Server - VS Code en navegador
+  code-server:
+    image: codercom/code-server:latest
+    ports:
+      - "8443:8080"
+    networks:
+      - servicios
+    volumes:
+      - code-server-data:/home/coder
+    environment:
+      - PASSWORD=contraseña123
+      - SUDO_PASSWORD=contraseña123
+
+  # Portainer - Gestión de contenedores Docker
+  portainer:
+    image: portainer/portainer-ce:latest
+    ports:
+      - "9000:9000"
+      - "8000:8000"
+    networks:
+      - servicios
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+
+  # Whoami - Muestra las peticiones
+  whoami:
+    image: traefik/whoami:latest
+    ports:
+      - "8081:80"
+    networks:
+      - servicios
+
+  # Web custom - Tu web
+  miweb:
+    image: nginx:alpine
+    ports:
+      - "8082:80"
+    networks:
+      - servicios
+    volumes:
+      - ./miweb:/usr/share/nginx/html
+
+  # Adminer - Gestor de bases de datos
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8083:8080"
+    networks:
+      - servicios
+
+  # MySQL para Adminer
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    networks:
+      - servicios
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: testdb
+
+  # Uptime Kuma - Monitoreo de servicios
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    ports:
+      - "3001:3001"
+    networks:
+      - servicios
+    volumes:
+      - uptime-kuma-data:/app/data
+
+  # PostgreSQL - Alternativa para bases de datos
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    networks:
+      - servicios
+    environment:
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: testdb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+networks:
+  servicios:
+    driver: bridge
+
+volumes:
+  code-server-data:
+  portainer-data:
+  uptime-kuma-data:
+  postgres-data:
