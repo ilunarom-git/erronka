@@ -1,0 +1,136 @@
+body {
+    background-color: white;
+    padding-top: 250px;
+
+}
+
+h1 {
+    text-align: center;
+    color: white;
+    background-color: black;
+
+}
+
+body {
+    background-color: rgb(218, 213, 213);
+}
+
+h2 {
+    padding: 25px;
+    margin: auto;
+
+}
+
+header {
+    background-color: black;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+header img {
+    display: block;
+    width: 250px;
+    height: 250x;
+    margin-bottom: 0px;
+    margin: 25px;
+    float: left;
+}
+
+footer {
+    text-decoration: none;
+
+}
+
+nav {
+    padding: 50px;
+    text-align: right;
+    background-color: black;
+}
+
+nav a {
+    text-decoration: none;
+
+}
+
+nav :hover {
+    color: green;
+    text-decoration: underline;
+    padding: auto;
+
+}
+
+
+
+.Hasiera {
+    color: white;
+    text-decoration: none;
+
+}
+
+.Berriak {
+    color: yellow;
+    text-decoration: none;
+    margin: 10px;
+}
+
+.Kontaktua {
+    color: aqua;
+    text-decoration: none;
+    margin: 10px;
+}
+
+.Formularioa {
+    color: tomato;
+    text-decoration: none;
+    margin: 10px;
+}
+
+form {
+    padding: 25px;
+}
+
+fieldset {
+    border-color: black;
+    border-style: solid;
+    margin: 100px;
+
+}
+
+img {
+    border-radius: 15px;
+    width: 250px;
+    margin-bottom: 25px;
+    margin: 25px;
+    float: right;
+}
+
+#Hasiera {
+    color: green;
+    text-align: center;
+    padding: 15px;
+}
+
+
+
+@media (min-width: 600px) {
+    .header {
+        grid-area: 1 / span 6;
+
+
+    }
+
+}
+
+img {
+    width: 150px;
+    height: 100px;
+}
+
+
+
+.footer {
+    grid-area: 3 / span 6;
+}
