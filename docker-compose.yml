@@ -1,169 +1,38 @@
-# Práctica de reverse proxy: nginx en el puerto 80/443 reparte las peticiones entre los servicios con HTTPS
+# Práctica de reverse proxy: nginx en el puerto 80 reparte las peticiones entre los servicios.
 #
-#   docker compose up -d                    ← siempre desde esta carpeta
-#     https://localhost/              → intranet
-#     https://localhost/codigo-agil/  → Código Agil
-#     https://localhost/mi-web/       → portal (web-publika/)
-#     https://localhost/code/         → Code Server
-#     https://localhost/portainer/    → Portainer
-#     https://localhost/adminer/      → Adminer
-#     https://localhost/whoami/       → Whoami
-#     https://localhost/kuma/         → Uptime Kuma
+#   docker compose up -d                       ← siempre desde esta carpeta
+#     http://localhost/              → portal (proxy/web/)
+#     http://localhost/code/         → code-server
+#     http://localhost/portainer/    → Portainer
 #
-# HTTP se redirige automáticamente a HTTPS
-# Solo el proxy publica puertos ("ports"). El resto de servicios no son accesibles desde fuera:
-# se llega a ellos a través del proxy, que los encuentra por su nombre de servicio.
+# Solo el proxy publica un puerto ("ports"). El resto de servicios no son accesibles desde fuera:
+# se llega a ellos a través del proxy, que los encuentra por su nombre de servicio (code, portainer…).
 
 services:
-  proxy:                        # reverse proxy HTTPS + portal
+  proxy:                        # reverse proxy + portal
     image: nginx:alpine
-    container_name: codigo-agil-proxy
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "80:80"                 # ¿Puerto 80 ocupado en tu PC? Usa otro: "8080:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./certs:/etc/nginx/certs:ro
-    networks:
-      - codigo-agil-network
-    depends_on:
-      - codigo-agil
-      - mi-web
-      - intranet
-      - code-server
-      - portainer
-      - adminer
-      - whoami
-      - kuma
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:80"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-  codigo-agil:                  # → /codigo-agil/
-    image: nginx:alpine
-    container_name: codigo-agil-app
-    restart: unless-stopped
-    volumes:
-      - ./codigo-agil:/usr/share/nginx/html:ro
-      - ./codigo-agil-nginx.conf:/etc/nginx/conf.d/default.conf:ro
-    networks:
-      - codigo-agil-network
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro   # la configuración
+      - ./web:/usr/share/nginx/html/web:ro                   # la web del portal
+      - ./intranet:/usr/share/nginx/html/intranet:ro                   # la web del portal
 
   mi-web:                       # → /mi-web/
     image: nginx:alpine
-    container_name: codigo-agil-mi-web
     restart: unless-stopped
     volumes:
       - ./web-publika:/usr/share/nginx/html:ro
-    networks:
-      - codigo-agil-network
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-  intranet:                     # → /
+  
+  intranet:                       # → /mi-web/
     image: nginx:alpine
-    container_name: codigo-agil-intranet
     restart: unless-stopped
     volumes:
       - ./intranet:/usr/share/nginx/html:ro
-    networks:
-      - codigo-agil-network
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
 
-  code-server:                  # → /code/
-    image: codercom/code-server:latest
-    container_name: codigo-agil-code
-    restart: unless-stopped
-    environment:
-      - PASSWORD=1234
-      - SUDO_PASSWORD=1234
-    volumes:
-      - ./code-data:/home/coder/.local/share/code-server
-    networks:
-      - codigo-agil-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-  portainer:                    # → /portainer/
-    image: portainer/portainer-ce:latest
-    container_name: codigo-agil-portainer
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./portainer-data:/data
-    networks:
-      - codigo-agil-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-  adminer:                      # → /adminer/
-    image: adminer:latest
-    container_name: codigo-agil-adminer
-    restart: unless-stopped
-    networks:
-      - codigo-agil-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-  whoami:                        # → /whoami/
-    image: traefik/whoami:latest
-    container_name: codigo-agil-whoami
-    restart: unless-stopped
-    networks:
-      - codigo-agil-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-  kuma:                          # → /kuma/
-    image: louislam/uptime-kuma:latest
-    container_name: codigo-agil-kuma
-    restart: unless-stopped
-    volumes:
-      - ./kuma-data:/app/data
-    networks:
-      - codigo-agil-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-networks:
-  codigo-agil-network:
-    driver: bridge
+# volumes:
+#   code_config:
+#   portainer_data:
+#   db_datos:
+#   kuma_datos:
